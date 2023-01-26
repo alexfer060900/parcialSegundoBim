@@ -16,9 +16,10 @@ object Main extends App{
   // ¿Cuantos torneos se jugaron en el 2022?
   val torneosjugados = data
     .map(row => row("tourney_id"))
+    .distinct
     .size
 
-  println("Se jugaron: " + torneosjugados + " en el 2022")
+  println("Se jugaron: " + torneosjugados + " torneos en el 2022")
 
   // ¿Cuáles los nombres de los torneos que se jugaron el 2022?
 
@@ -165,6 +166,7 @@ object Main extends App{
     })
     .filter(_.isSuccess)
     .map(x => x.get)
+    .filter(x => x != 0.0)
 
   val minutes = matchinfoMinutes
     .groupBy(identity)
@@ -194,9 +196,9 @@ object Main extends App{
 
   val minutospromedio = average(matchinfoMinutes)
 
-  println("El minuto mas alto es: " + minutestalto)
-  println("El minuto mas bajo es: " + minutetbajo)
-  println("El promedio minuto es: " + minutospromedio)
+  println("El numero de minutos mas alto es: " + minutestalto)
+  println("El numero de minutos mas bajo es: " + minutetbajo)
+  println("El promedio de minutos jugados es: " + minutospromedio)
 
 
 
