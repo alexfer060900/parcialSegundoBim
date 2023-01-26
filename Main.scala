@@ -3,14 +3,38 @@ import play.api.libs.json.Json
 import com.cibo.evilplot._
 import com.cibo.evilplot.plot.{BarChart, PieChart}
 import com.cibo.evilplot.plot.aesthetics.DefaultTheme.{DefaultElements, DefaultTheme, defaultTheme}
-import scala.util.{Failure, Success, Try}
 
+import scala.util.{Failure, Success, Try}
 import java.io.File
 
 object Main extends App{
   val reader = CSVReader.open(new File("C:\\Users\\alexa\\Downloads\\data_parcial_2_OO.csv\\data_parcial_2_OO.csv"))
   val data = reader.allWithHeaders()
   reader.close()
+
+
+  // ¿Cuantos torneos se jugaron en el 2022?
+  val torneosjugados = data
+    .map(row => row("tourney_id"))
+    .size
+
+  println("Se jugaron: " + torneosjugados + " en el 2022")
+
+  // ¿Cuáles los nombres de los torneos que se jugaron el 2022?
+
+  val nombretorneos = data
+    .map(row => row("tourney_name"))
+    .distinct
+  println("Los nombres de los torneos son: " + nombretorneos)
+
+  def max (s: List[Double]) =
+    s.max
+
+  def min (s: List[Double]) =
+    s.min
+
+  def average (s: List[Double]) =
+    s.sum / s.size
 
   val playerInfo = data
     .map(row => row("players_info"))
@@ -65,11 +89,11 @@ object Main extends App{
   val heightCount = popularHeight.map(_._2).map(_.toDouble)
   val height1 = popularHeight.map(_._1).map(_.toString)
 
-  val masAlto = height0.max
+  val masAlto = max(height0)
 
-  val masBajo = height0.filter(_ != 0).min
+  val masBajo = min(height0)
 
-  val alturasPromedio = height0.sum / height0.length
+  val alturasPromedio = average(height0)
 
   println("El jugador mas alto es: " + masAlto)
   println("El jugador mas bajo es: " + masBajo)
@@ -92,6 +116,13 @@ object Main extends App{
     .flatMap(jsonData => jsonData \\ "best_of")
     .map(jsValue => jsValue.as[Int])
 
+  val matchinfoDouble = data
+    .flatMap(row => row.get("match_info"))
+    .map(row => Json.parse(row))
+    .flatMap(jsonData => jsonData \\ "best_of")
+    .map(jsValue => jsValue.as[Int])
+    .map(_.toDouble)
+
   val matchinfo2 = matchinfo
     .groupBy(identity)
     .map { case (keyword, lista) => (keyword, lista.size) }
@@ -113,11 +144,11 @@ object Main extends App{
     .write(new File("C:\\Users\\alexa\\Desktop\\histogramaSets.png"))
 
 
-  val bestalto = matchinfo.max
+  val bestalto = max(matchinfoDouble)
 
-  val bestbajo = matchinfo.filter(_ != 0).min
+  val bestbajo = min(matchinfoDouble)
 
-  val matchpromediobest = matchinfo.sum / matchinfo.length
+  val matchpromediobest = average(matchinfoDouble)
 
   println("El best_of mas alto es: " + bestalto)
   println("El best_of mas bajo es: " + bestbajo)
@@ -157,11 +188,11 @@ object Main extends App{
     .write(new File("C:\\Users\\alexa\\Desktop\\histogramaMinutos.png"))
 
 
-  val minutestalto = matchinfoMinutes.max
+  val minutestalto = max(matchinfoMinutes)
 
-  val minutetbajo = matchinfoMinutes.filter(_ != 0).min
+  val minutetbajo = min(matchinfoMinutes)
 
-  val minutospromedio = matchinfoMinutes.sum / matchinfoMinutes.length
+  val minutospromedio = average(matchinfoMinutes)
 
   println("El minuto mas alto es: " + minutestalto)
   println("El minuto mas bajo es: " + minutetbajo)
