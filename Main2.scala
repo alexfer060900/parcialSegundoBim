@@ -1,25 +1,14 @@
 import kantan.csv._
 import kantan.csv.ops._
 import kantan.csv.generic._
-
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
-
 import java.io.File
-
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-
 import play.api.libs.json._
 import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
 
-import requests.Response
-
-
-import scalikejdbc._
 
 object Main extends App {
 
