@@ -1,8 +1,9 @@
 import com.github.tototoshi.csv.CSVReader
 import play.api.libs.json.Json
 import com.cibo.evilplot._
-import com.cibo.evilplot.plot.{BarChart, PieChart}
+import com.cibo.evilplot.plot.{BarChart, Histogram, PieChart}
 import com.cibo.evilplot.plot.aesthetics.DefaultTheme.{DefaultElements, DefaultTheme, defaultTheme}
+import com.cibo.evilplot.plot.aesthetics.Theme
 
 import scala.util.{Failure, Success, Try}
 import java.io.File
@@ -11,7 +12,6 @@ object Main extends App{
   val reader = CSVReader.open(new File("C:\\Users\\alexa\\Downloads\\data_parcial_2_OO.csv\\data_parcial_2_OO.csv"))
   val data = reader.allWithHeaders()
   reader.close()
-
 
   // ¿Cuantos torneos se jugaron en el 2022?
   val torneosjugados = data
@@ -25,7 +25,11 @@ object Main extends App{
 
   val nombretorneos = data
     .map(row => row("tourney_name"))
+    .map(x => x.split(":"))
+    .map(x => x(0))
     .distinct
+
+
   println("Los nombres de los torneos son: " + nombretorneos)
 
   def max (s: List[Double]) =
@@ -62,7 +66,7 @@ object Main extends App{
     .xAxis(hand)
     .yAxis()
     .frame()
-    .yLabel("Popularidad")
+    .yLabel("Frecuencia")
     .bottomLegend()
     .render()
     .write(new File("C:\\Users\\alexa\\Desktop\\histogramaManos.png"))
@@ -102,11 +106,11 @@ object Main extends App{
 
 
   BarChart(heightCount)
-    .title("Altura mas populares")
+    .title("Altura")
     .xAxis(height1)
     .yAxis()
     .frame()
-    .yLabel("Popularidad")
+    .yLabel("Frecuencia")
     .bottomLegend()
     .render()
     .write(new File("C:\\Users\\alexa\\Desktop\\histogramaAlturas.png"))
@@ -139,7 +143,7 @@ object Main extends App{
     .xAxis(matchInfo2)
     .yAxis()
     .frame()
-    .yLabel("Popularidad")
+    .yLabel("Frecuencia")
     .bottomLegend()
     .render()
     .write(new File("C:\\Users\\alexa\\Desktop\\histogramaSets.png"))
@@ -184,10 +188,11 @@ object Main extends App{
     .xAxis(minutesInfo2)
     .yAxis()
     .frame()
-    .yLabel("Popularidad")
+    .yLabel("Frecuencia")
     .bottomLegend()
     .render()
     .write(new File("C:\\Users\\alexa\\Desktop\\histogramaMinutos.png"))
+
 
 
   val minutestalto = max(matchinfoMinutes)
